@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar: pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#board">Skip to the board</a>
+<header class="top">
+  <div class="brand"><span class="dot" aria-hidden="true"></span><span>Token Radar</span></div>
+  <p class="meta">Snapshot <span id="meta-snapshot">—</span> · DefiLlama protocol index · <span id="meta-model">—</span> model</p>
+</header>
+<main>
+  <section class="hero">
+    <h1><span id="hero-count">—</span> pre-token protocols, ranked by implied launch value</h1>
+    <p class="lede">The watchlist is the floor — every protocol with $50M+ TVL and no token on record. The radar adds the 157 more the same rule finds, and leaves out exchanges, bridges and wrapped products. Implied value is a model, not a promise.</p>
+    <dl class="stats">
+      <div><dt>Watchlist covered</dt><dd id="stat-watchlist">—</dd></div>
+      <div><dt>Pre-token rows scored</dt><dd id="stat-rows">—</dd></div>
+      <div><dt>Early rows the radar found</dt><dd id="stat-early">—</dd></div>
+      <div><dt>Live-token protocols set aside</dt><dd id="stat-live">—</dd></div>
+    </dl>
+  </section>
+
+  <section class="chart" aria-label="Top 6 by implied value">
+    <h2>Top 6 by implied value</h2>
+    <p class="chart-note">The top of the board, to scale — the first two are the same size class.</p>
+    <div id="chart"></div>
+  </section>
+
+  <section class="controls" aria-label="Board controls">
+    <div class="field">
+      <label for="q">Search</label>
+      <input id="q" type="search" placeholder="Search name, category, chain" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="category">Category</label>
+      <select id="category"><option value="">All categories</option></select>
+    </div>
+    <div class="field">
+      <label for="chain">Chain</label>
+      <select id="chain"><option value="">All chains</option></select>
+    </div>
+    <div class="field toggles">
+      <label class="check"><input id="watchlist-only" type="checkbox"> Watchlist only</label>
+      <label class="check"><input id="growing-only" type="checkbox"> Growing only (7d &gt; 0)</label>
+    </div>
+    <div class="field tabs" role="tablist" aria-label="Token status">
+      <button id="tab-pre" role="tab" aria-selected="true">Pre-token</button>
+      <button id="tab-live" role="tab" aria-selected="false">Live token</button>
+    </div>
+    <p class="count" id="count" aria-live="polite"></p>
+  </section>
+
+  <section class="board-wrap">
+    <p class="board-note">Pre-token protocols, strongest implied value first. Select a row for its model and farm plan.</p>
+    <table id="board">
+      <thead>
+        <tr>
+          <th data-sort="rank" aria-sort="descending">Rank</th>
+          <th data-sort="name">Protocol</th>
+          <th data-sort="tvl_usd">TVL</th>
+          <th data-sort="change_7d">7d</th>
+          <th data-sort="age">Age</th>
+          <th data-sort="implied_value_usd">Implied value</th>
+          <th>Token</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <table id="live" hidden>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Protocol</th>
+          <th>TVL</th>
+          <th>Market cap</th>
+          <th>Mcap / TVL</th>
+          <th>7d</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="model" id="model">
+    <h2>How the radar scores</h2>
+    <p class="formula">implied value = TVL × category multiple × growth multiplier × maturity multiplier × chain breadth</p>
+    <div class="model-grid">
+      <div>
+        <h3>The four multipliers</h3>
+        <ul>
+          <li><strong>Category multiple</strong> — what a launch is worth per dollar of TVL, by what the protocol does: DEXs 0.35; lending, derivatives and prediction markets 0.30; yield, yield aggregators, leveraged farming and basis trading 0.28; everything else 0.25; RWA and restaking 0.22; CDP, chains and staking pools 0.20.</li>
+          <li><strong>Growth multiplier</strong> — 1 + clamp(7-day change, −60%, +120%) × 0.5. A protocol up 10% in a week scores 5% higher than a flat one.</li>
+          <li><strong>Maturity multiplier</strong> — 0.6 + min(age, 3 years) / 3 years × 0.4. Three years with no token is a full point; a month-old protocol is 0.63. An unknown listing date counts as one year.</li>
+          <li><strong>Chain breadth</strong> — 1 + min(chains − 1, 4) × 0.03. Each extra chain up to four adds 3% for wider distribution at launch.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What counts as pre-token</h3>
+        <p>The same rule the house watchlist uses, applied to every row: the snapshot records no token (no market cap, no Gecko id, no symbol), and the protocol is not an exchange, a bridge, a liquid-staking product, or a wrapped or staked product of one that trades, and its name is not a versioned copy. That leaves 197 of the 342 pre-token records in the snapshot: the 40 on the watchlist, 19 more above the $50M floor the house list does not name, and 138 below it.</p>
+        <h3>What the board leaves out</h3>
+        <p>145 pre-token records are not launches at all: exchanges with no token of their own (Bybit $13.8B, Bitfinex $12.6B, Robinhood $12.2B), wrapped assets (WBTC $7.9B), staked products (Binance staked ETH $7.4B) and bridges (Coinbase Bridge $7.2B). Ranking them would crown products that can never launch.</p>
+        <h3>A reality check from the live side</h3>
+        <p id="live-check">The 24 largest live-token protocols in this snapshot trade at a median of about $1.19 of market cap per $1 of TVL. The model applies 0.20–0.35 — a launch discount against live comps, because a new token has no trading history, no liquidity depth and no proven fee capture.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<aside id="detail" hidden aria-label="Protocol detail">
+  <div class="detail-head">
+    <p class="detail-rank" id="detail-rank"></p>
+    <button id="detail-close" type="button">Close</button>
+  </div>
+  <h2 id="detail-name"></h2>
+  <p class="detail-sub" id="detail-sub"></p>
+  <p class="detail-tag" id="detail-tag"></p>
+  <h3>Implied value</h3>
+  <dl class="breakdown" id="detail-breakdown"></dl>
+  <p class="recompute" id="detail-recompute"></p>
+  <h3>Farm plan</h3>
+  <ol class="farm" id="detail-farm"></ol>
+  <p class="record" id="detail-record"></p>
+</aside>
+
+<footer>
+  <p>Snapshot: DefiLlama protocol index, fetched 2026-11-14. Model radar-2. Implied values are estimates from the snapshot’s own figures; they are not prices, and no token launch is promised. A protocol the snapshot records as having a token is set aside, whatever its TVL.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
